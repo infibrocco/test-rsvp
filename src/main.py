@@ -38,7 +38,7 @@ class MainApp(MDApp):
         self.WPM = 500
         self.BH = 100
         self.RTIME = 60 / self.WPM  # / 60
-        self.chap_root = Path("rssg/")
+        self.chap_root = Path("../rssg/")
 
         self.load_consts()
 
