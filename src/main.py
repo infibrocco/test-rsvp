@@ -3,8 +3,14 @@ from pathlib import Path
 import os, json
 
 from kivymd.app import MDApp
-from kivymd.uix.button import MDButton, MDButtonText, MDButtonIcon#, MDFabButton
+from kivymd.uix.button import (
+    MDButton,
+    MDButtonText,
+    MDButtonIcon,
+    MDIconButton
+)  # , MDFabButton
 from kivymd.uix.floatlayout import MDFloatLayout
+from kivymd.uix.boxlayout import MDBoxLayout
 
 from kivymd.uix.textfield import (
     MDTextField,
@@ -14,6 +20,17 @@ from kivymd.uix.textfield import (
     # MDTextFieldTrailingIcon,
     MDTextFieldMaxLengthText,
 )
+from kivymd.uix.navigationdrawer import (
+    MDNavigationLayout,
+    MDNavigationDrawer,
+    MDNavigationDrawerMenu,
+    MDNavigationDrawerLabel,
+    MDNavigationDrawerItem,
+    MDNavigationDrawerItemLeadingIcon,
+    MDNavigationDrawerItemText,
+    MDNavigationDrawerItemTrailingText,
+    MDNavigationDrawerDivider,
+)
 
 from kivymd.uix.label import MDLabel
 from kivymd.uix.screen import MDScreen
@@ -21,7 +38,8 @@ from kivymd.uix.screen import MDScreen
 
 # from kivy.app import App
 from kivy.clock import Clock
-from kivy.metrics import sp
+from kivy.metrics import sp, dp
+from kivy.core.window import Window
 
 # from kivy.uix.button import Button
 # from kivy.uix.floatlayout import FloatLayout
@@ -38,7 +56,8 @@ class MainApp(MDApp):
         self.WPM = 500
         self.BH = 100
         self.RTIME = 60 / self.WPM  # / 60
-        self.chap_root = Path("../rssg/")
+        self.LABEL_SHOW_W = 1200
+        self.chap_root = Path("rssg/")
 
         self.load_consts()
 
@@ -46,11 +65,19 @@ class MainApp(MDApp):
         self.theme_cls.theme_style = "Dark"
         self.theme_cls.primary_palette = "Green"
         self.screen = MDScreen()
+        self.blayout = MDBoxLayout(
+            orientation="horizontal",
+            size_hint=(1, 0.1),
+            pos_hint={"right": 1, "top": 1},
+        )
         self.layout = MDFloatLayout()
         self.screen.add_widget(self.layout)
+        self.screen.add_widget(self.blayout)
         self.reading_text = ""
         self.all_text = [""]
-        self.word_index = 0 if not hasattr(self, "word_index") else self.word_index
+        self.word_index = (
+            0 if not hasattr(self, "word_index") else self.word_index
+        )
         self.read_paused = False
         # self.chap_num = "777"
         self.load_chap()
@@ -128,11 +155,17 @@ class MainApp(MDApp):
         )
         self.ibutton = MDButton(
             MDButtonIcon(icon="pause"),
-            MDButtonText(text="Pause"),
+            MDButtonText(text="Pause") if Window.width > self.LABEL_SHOW_W else None,
             theme_height="Custom",
             theme_width="Custom",
-            size_hint=(0.135, 0.1),
-            pos_hint={"x": 0.115, "top": 1},
+            theme_font_size="Custom",
+            radius=[
+                0,
+            ],
+            # font_size="12sp",
+            # style="elevated",
+            # size_hint=(0.135, 1),
+            pos_hint={"x": 0.115, "top": .95},
             on_press=self.on_pause_press,
         )
         # self.ibutton = MDButton(
@@ -143,20 +176,28 @@ class MainApp(MDApp):
         # )
         self.bbutton = MDButton(
             MDButtonIcon(icon="step-backward"),
-            MDButtonText(text="Back"),
+            MDButtonText(text="Back") if Window.width > self.LABEL_SHOW_W else None,
             theme_height="Custom",
             theme_width="Custom",
-            size_hint=(0.115, 0.1),
-            pos_hint={"x": 0, "top": 1},
+            theme_font_size="Custom",
+            radius=[
+                0,
+            ],
+            # size_hint=(0.115, 1),
+            pos_hint={"x": 0, "top": .95},
             on_press=self.on_button_back,
         )
         self.fbutton = MDButton(
             MDButtonIcon(icon="step-forward"),
-            MDButtonText(text="Forward"),
+            MDButtonText(text="Forward") if Window.width > self.LABEL_SHOW_W else None,
             theme_height="Custom",
             theme_width="Custom",
-            size_hint=(0.135, 0.1),
-            pos_hint={"x": 0.25, "top": 1},
+            theme_font_size="Custom",
+            radius=[
+                0,
+            ],
+            # size_hint=(0.135, 1),
+            pos_hint={"x": 0.25, "top": .95},
             on_press=self.on_button_forward,
         )
         self.est = MDLabel(
@@ -188,11 +229,15 @@ class MainApp(MDApp):
         )
         self.nbutton = MDButton(
             MDButtonIcon(icon="skip-forward"),
-            MDButtonText(text="Next"),
+            MDButtonText(text="Next") if Window.width > self.LABEL_SHOW_W else None,
             theme_height="Custom",
             theme_width="Custom",
-            size_hint=(0.1, 0.1),
-            pos_hint={"x": 0.9, "top": 1},
+            theme_font_size="Custom",
+            radius=[
+                0,
+            ],
+            # size_hint=(0.1, 1),
+            pos_hint={"x": 0.9, "top": .95},
             on_press=self.on_chap_next,
         )
 
@@ -210,12 +255,12 @@ class MainApp(MDApp):
             MDTextFieldMaxLengthText(
                 max_text_length=15,
             ),
-            text="Chapter "+str(self.chap_num),
+            text="Chapter " + str(self.chap_num),
             mode="outlined",
-            size_hint_x=0.185,
+            size_hint_x=1.4,
             theme_height="Custom",
-            height=0.1,
-            pos_hint={"x": 0.715, "top": 0.99},
+            # height=1,
+            pos_hint={"x": 0.715, "top": 0.9},
         )
 
         # self.chap = MDLabel(
@@ -238,11 +283,16 @@ class MainApp(MDApp):
         self.chap.bind(on_text_validate=self.text_valid)
         self.pbutton = MDButton(
             MDButtonIcon(icon="skip-backward"),
-            MDButtonText(text="Previous"),
+            MDButtonText(text="Previous") if Window.width > self.LABEL_SHOW_W else None,
             theme_height="Custom",
             theme_width="Custom",
-            size_hint=(0.14, 0.1),
-            pos_hint={"x": 0.575, "top": 1},
+            theme_font_size="Custom",
+            radius=[
+                0,
+            ],
+            # size_hint=(0.2, 1),
+            # size_hint_x=1/7,
+            pos_hint={"x": 0.575, "top": .95},
             on_press=self.on_chap_prev,
         )
         # self.wpm_text = MDLabel(
@@ -278,10 +328,10 @@ class MainApp(MDApp):
             ),
             text=str(self.WPM),
             mode="outlined",
-            size_hint_x=0.19,
+            # size_hint_x=1/7,
             theme_height="Custom",
-            height=0.1,
-            pos_hint={"x": 0.385, "top": .99},
+            # height=0.1,
+            pos_hint={"x": 0.385, "top": 0.9},
         )
 
         self.wpm_text.bind(on_text_validate=self.wpm_valid)
@@ -297,18 +347,60 @@ class MainApp(MDApp):
         #     size_hint=(0.2, 0.2),
         #     pos_hint={"center_x": 0.5, "top": 0.65},
         # )
+
+        self.nav_draw = MDNavigationDrawer(
+                    MDNavigationDrawerMenu(
+                        MDNavigationDrawerLabel(
+                            text="Mail",
+                        ),
+                        MDNavigationDrawerItem(
+                            MDNavigationDrawerItemLeadingIcon(
+                                icon="account",
+                            ),
+                            MDNavigationDrawerItemText(
+                                text="Inbox",
+                            ),
+                            MDNavigationDrawerItemTrailingText(
+                                text="24",
+                            ),
+                        ),
+                        MDNavigationDrawerDivider(
+                        ),
+                    ),
+                    id="nav_drawer",
+                    radius=(0, dp(16), dp(16), 0),
+                )
+
+
+        self.nav_btn = MDButton(
+            MDButtonIcon(icon="menu"),
+            theme_height="Custom",
+            theme_width="Custom",
+            theme_font_size="Custom",
+            radius=[
+                0,
+            ],
+            style="elevated",
+            pos_hint={"left": 0, "top": .895},
+            #pos_hint={"center_x": 0.2, "center_y": 0.8},
+            size_hint=(.07, .1),
+            on_press=lambda _: self.nav_draw.set_state("toggle"),
+        )
+
         self.layout.add_widget(self.side_text1)
         self.layout.add_widget(self.mtext)
         self.layout.add_widget(self.side_text2)
         self.layout.add_widget(self.btext)
-        self.layout.add_widget(self.ibutton)
-        self.layout.add_widget(self.bbutton)
-        self.layout.add_widget(self.fbutton)
         self.layout.add_widget(self.est)
-        self.layout.add_widget(self.nbutton)
-        self.layout.add_widget(self.pbutton)
-        self.layout.add_widget(self.chap)
-        self.layout.add_widget(self.wpm_text)
+        self.blayout.add_widget(self.bbutton)
+        self.blayout.add_widget(self.ibutton)
+        self.blayout.add_widget(self.fbutton)
+        self.blayout.add_widget(self.wpm_text)
+        self.blayout.add_widget(self.chap)
+        self.blayout.add_widget(self.pbutton)
+        self.blayout.add_widget(self.nbutton)
+        self.layout.add_widget(self.nav_draw)
+        self.layout.add_widget(self.nav_btn)
         # layout.add_widget(self.debug_text)
         self.read_event = Clock.schedule_interval(
             self.on_read_update, self.RTIME
@@ -327,30 +419,38 @@ class MainApp(MDApp):
             )
 
         self.update_all_text()
-        self.layout.remove_widget(self.ibutton)
+        self.blayout.remove_widget(self.ibutton)
         # self.screen.remove_widget(self.layout)
         self.ibutton = (
             MDButton(
                 MDButtonIcon(icon="pause"),
-                MDButtonText(text="Pause"),
+                # MDButtonText(text="Pause"),
                 theme_height="Custom",
                 theme_width="Custom",
-                size_hint=(0.135, 0.1),
-                pos_hint={"x": 0.115, "top": 1},
+                theme_font_size="Custom",
+                radius=[
+                    0,
+                ],
+                # size_hint=(0.135, 1),
+                pos_hint={"x": 0.115, "top": .95},
                 on_press=self.on_pause_press,
             )
             if not self.read_paused
             else MDButton(
                 MDButtonIcon(icon="play"),
-                MDButtonText(text="Resume"),
+                # MDButtonText(text="Resume"),
                 theme_height="Custom",
                 theme_width="Custom",
-                size_hint=(0.135, 0.1),
-                pos_hint={"x": 0.115, "top": 1},
+                theme_font_size="Custom",
+                radius=[
+                    0,
+                ],
+                # size_hint=(0.135, 1),
+                pos_hint={"x": 0.115, "top": .95},
                 on_press=self.on_pause_press,
             )
         )
-        self.layout.add_widget(self.ibutton)
+        self.blayout.add_widget(self.ibutton, index=5)
         # self.screen.add_widget(self.layout)
 
     def text_valid(self, *args):
