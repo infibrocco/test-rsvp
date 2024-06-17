@@ -3,27 +3,35 @@ import os
 from datetime import datetime, timedelta
 from pathlib import Path
 
+import kivymd.icon_definitions
+
 # from kivy.app import App
 from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.metrics import dp, sp
 from kivymd.app import MDApp
 from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.button import (MDButton,  # MDIconButton; , MDFabButton
-                               MDButtonIcon, MDButtonText)
+from kivymd.uix.button import MDButton  # MDIconButton; , MDFabButton
+from kivymd.uix.button import MDButtonIcon, MDButtonText
 from kivymd.uix.floatlayout import MDFloatLayout
 from kivymd.uix.gridlayout import MDGridLayout
 from kivymd.uix.label import MDLabel
 from kivymd.uix.navigationdrawer import (  # MDNavigationLayout,; MDNavigationDrawerItem,; MDNavigationDrawerItemLeadingIcon,; MDNavigationDrawerItemText,; MDNavigationDrawerItemTrailingText,
-    MDNavigationDrawer, MDNavigationDrawerDivider, MDNavigationDrawerLabel,
-    MDNavigationDrawerMenu)
+    MDNavigationDrawer,
+    MDNavigationDrawerDivider,
+    MDNavigationDrawerLabel,
+    MDNavigationDrawerMenu,
+)
 from kivymd.uix.responsivelayout import MDResponsiveLayout
 from kivymd.uix.screen import MDScreen
 from kivymd.uix.stacklayout import MDStackLayout
-from kivymd.uix.textfield import (MDTextField,  # MDTextFieldTrailingIcon,
-                                  MDTextFieldHelperText, MDTextFieldHintText,
-                                  MDTextFieldLeadingIcon,
-                                  MDTextFieldMaxLengthText)
+from kivymd.uix.textfield import MDTextField  # MDTextFieldTrailingIcon,
+from kivymd.uix.textfield import (
+    MDTextFieldHelperText,
+    MDTextFieldHintText,
+    MDTextFieldLeadingIcon,
+    MDTextFieldMaxLengthText,
+)
 
 # from kivy.uix.button import Button
 # from kivy.uix.floatlayout import FloatLayout
@@ -33,7 +41,7 @@ SCREEN_TITLE = "RSVP tests"
 
 
 def hide_widget(wid, dohide=True):
-    if hasattr(wid, 'saved_attrs'):
+    if hasattr(wid, "saved_attrs"):
         if not dohide:
             wid.height, wid.size_hint_y, wid.opacity, wid.disabled = wid.saved_attrs
             del wid.saved_attrs
@@ -41,7 +49,9 @@ def hide_widget(wid, dohide=True):
         wid.saved_attrs = wid.height, wid.size_hint_y, wid.opacity, wid.disabled
         wid.height, wid.size_hint_y, wid.opacity, wid.disabled = 0, None, 0, True
 
-#Window.size = (500, 300)
+
+# Window.size = (500, 300)
+
 
 class MainApp(MDApp):
     def build(self):
@@ -74,13 +84,13 @@ class MainApp(MDApp):
             orientation="lr-tb",
             size_hint=(1, 0.4),
             pos_hint={"center_x": 0.5, "center_y": 0.5},
-            #rows=2,
-            #cols=3,
-            #padding=dp(200),
+            # rows=2,
+            # cols=3,
+            # padding=dp(200),
             spacing=dp(80),
-            #row_default_height=20,
+            # row_default_height=20,
         )
- 
+
         self.layout = MDFloatLayout()
         self.screen.add_widget(self.b3layout)
         self.screen.add_widget(self.blayout)
@@ -88,9 +98,7 @@ class MainApp(MDApp):
         self.screen.add_widget(self.layout)
         self.reading_text = ""
         self.all_text = [""]
-        self.word_index = (
-            0 if not hasattr(self, "word_index") else self.word_index
-        )
+        self.word_index = 0 if not hasattr(self, "word_index") else self.word_index
         self.read_paused = False
         # self.chap_num = "777"
         self.load_chap()
@@ -152,9 +160,7 @@ class MainApp(MDApp):
             pos_hint={"left": 1, "center_y": 0.65},
         )
         self.side_text2 = MDLabel(
-            text=self.all_text[
-                min(self.word_index + 1, len(self.all_text) - 1)
-            ],
+            text=self.all_text[min(self.word_index + 1, len(self.all_text) - 1)],
             line_height=self.DEFAULT_LINE_HEIGHT,
             halign="center",
             theme_font_size="Custom",
@@ -180,7 +186,7 @@ class MainApp(MDApp):
             # font_size="12sp",
             # style="elevated",
             # size_hint=(0.135, 1),
-            pos_hint={"x": 0.115, "top": .95},
+            pos_hint={"x": 0.115, "top": 0.95},
             on_press=self.on_pause_press,
         )
         # self.ibutton = MDButton(
@@ -199,7 +205,7 @@ class MainApp(MDApp):
                 0,
             ],
             # size_hint=(0.115, 1),
-            pos_hint={"x": 0, "top": .95},
+            pos_hint={"x": 0, "top": 0.95},
             on_press=self.on_button_back,
         )
         self.fbutton = MDButton(
@@ -212,7 +218,7 @@ class MainApp(MDApp):
                 0,
             ],
             # size_hint=(0.135, 1),
-            pos_hint={"x": 0.25, "top": .95},
+            pos_hint={"x": 0.25, "top": 0.95},
             on_press=self.on_button_forward,
         )
         self.est = MDLabel(
@@ -220,9 +226,7 @@ class MainApp(MDApp):
                 (
                     datetime(1, 1, 1)
                     + timedelta(
-                        minutes=(
-                            (len(self.all_text) - self.word_index) / self.WPM
-                        )
+                        minutes=((len(self.all_text) - self.word_index) / self.WPM)
                     )
                 )
                 .strftime("%M min %S sec")
@@ -252,7 +256,7 @@ class MainApp(MDApp):
                 0,
             ],
             # size_hint=(0.1, 1),
-            pos_hint={"x": 0.9, "top": .95},
+            pos_hint={"x": 0.9, "top": 0.95},
             on_press=self.on_chap_next,
         )
 
@@ -307,7 +311,7 @@ class MainApp(MDApp):
             ],
             # size_hint=(0.2, 1),
             # size_hint_x=1/7,
-            pos_hint={"x": 0.575, "top": .95},
+            pos_hint={"x": 0.575, "top": 0.95},
             on_press=self.on_chap_prev,
         )
         # self.wpm_text = MDLabel(
@@ -345,9 +349,9 @@ class MainApp(MDApp):
             mode="outlined",
             # size_hint_x=1/7,
             theme_height="Custom",
-            pos_hint={"center_x": .5, "center_y": .5}
+            pos_hint={"center_x": 0.5, "center_y": 0.5},
             # height=0.1,
-            #pos_hint={"x": 0.385, "top": 0.9},
+            # pos_hint={"x": 0.385, "top": 0.9},
         )
 
         self.wpm_text.bind(on_text_validate=self.wpm_valid)
@@ -382,9 +386,9 @@ class MainApp(MDApp):
             mode="outlined",
             # size_hint_x=1/7,
             theme_height="Custom",
-            #pos_hint={"center_x": .5, "center_y": .5}
+            # pos_hint={"center_x": .5, "center_y": .5}
             # height=0.1,
-            #pos_hint={"x": 0.385, "top": 0.9},
+            # pos_hint={"x": 0.385, "top": 0.9},
         )
         self.btext_afield.bind(on_text_validate=self.bh_valid)
 
@@ -404,40 +408,44 @@ class MainApp(MDApp):
             ),
             text=str(self.chap_root),
             mode="outlined",
-            #size_hint_x=1.4,
+            # size_hint_x=1.4,
             theme_height="Custom",
             # height=1,
-            #pos_hint={"x": 0.715, "top": 0.9},
+            # pos_hint={"x": 0.715, "top": 0.9},
         )
-        self.chap_root_t.bind(on_text_validate=lambda *_: setattr(self, "chap_root", Path(str(self.chap_root_t.text))))
+        self.chap_root_t.bind(
+            on_text_validate=lambda *_: setattr(
+                self, "chap_root", Path(str(self.chap_root_t.text))
+            )
+        )
 
-        #navdiv = MDNavigationDrawerDivider(spacing=10, padding=[20,40,20,40]) 
+        # navdiv = MDNavigationDrawerDivider(spacing=10, padding=[20,40,20,40])
 
         self.nav_draw = MDNavigationDrawer(
-                    MDNavigationDrawerMenu(
-                        #navdiv,
-                        MDNavigationDrawerLabel(
-                            text="Config",
-                        ),
-                        self.wpm_text,
-                        self.chap,
-                        self.btext_afield,
-                        self.chap_root_t,
-                        #MDNavigationDrawerDivider(),
-                        spacing=dp(30),
-                    ),
-                    id="nav_drawer",
-                    #radius=(0, dp(16), dp(16), 0),
-                    theme_elevation_level="Custom",
-                    #elevation_level=5,
-                    #drawer_type="standard",
-                    #on_open=self.on_pause_press,
-                    #padding=[dp(200), dp(200), dp(200), dp(200)],
+            MDNavigationDrawerMenu(
+                # navdiv,
+                MDNavigationDrawerLabel(
+                    text="Config",
+                ),
+                self.wpm_text,
+                self.chap,
+                self.btext_afield,
+                self.chap_root_t,
+                # MDNavigationDrawerDivider(),
+                spacing=dp(30),
+            ),
+            id="nav_drawer",
+            # radius=(0, dp(16), dp(16), 0),
+            theme_elevation_level="Custom",
+            # elevation_level=5,
+            # drawer_type="standard",
+            # on_open=self.on_pause_press,
+            # padding=[dp(200), dp(200), dp(200), dp(200)],
         )
         self.nav_draw.on_open = lambda *_: self.on_pause_press(read_paused=False)
         self.nav_draw.on_close = lambda *_: self.on_pause_press(read_paused=True)
 
-        #hide_widget(navdiv)
+        # hide_widget(navdiv)
 
         self.nav_btn = MDButton(
             MDButtonIcon(icon="menu"),
@@ -448,12 +456,12 @@ class MainApp(MDApp):
                 0,
             ],
             style="elevated",
-            #pos_hint={"left": 0, "top": .895},
+            # pos_hint={"left": 0, "top": .895},
             pos_hint={"center_x": 0.5, "center_y": 0.5},
             size_hint=(None, None),
             width=dp(55),
             height=dp(55),
-            #size_hint=(.07, .1),
+            # size_hint=(.07, .1),
             on_press=lambda _: (self.nav_draw.set_state("toggle"), ...),
         )
 
@@ -465,16 +473,14 @@ class MainApp(MDApp):
         self.blayout.add_widget(self.bbutton)
         self.blayout.add_widget(self.ibutton)
         self.blayout.add_widget(self.fbutton)
-        #self.blayout.add_widget(self.wpm_text)
-        #self.blayout.add_widget(self.chap)
+        # self.blayout.add_widget(self.wpm_text)
+        # self.blayout.add_widget(self.chap)
         self.blayout.add_widget(self.pbutton)
         self.blayout.add_widget(self.nbutton)
         self.layout.add_widget(self.nav_draw)
         self.b2layout.add_widget(self.nav_btn)
         # layout.add_widget(self.debug_text)
-        self.read_event = Clock.schedule_interval(
-            self.on_read_update, self.RTIME
-        )
+        self.read_event = Clock.schedule_interval(self.on_read_update, self.RTIME)
 
         return self.screen
 
@@ -485,9 +491,7 @@ class MainApp(MDApp):
             self.read_event.cancel()
         else:
             self.read_paused = False
-            self.read_event = Clock.schedule_interval(
-                self.on_read_update, self.RTIME
-            )
+            self.read_event = Clock.schedule_interval(self.on_read_update, self.RTIME)
 
         self.update_all_text()
         self.blayout.remove_widget(self.ibutton)
@@ -495,7 +499,11 @@ class MainApp(MDApp):
         self.ibutton = (
             MDButton(
                 MDButtonIcon(icon="pause"),
-                MDButtonText(text="Pause") if Window.width > self.LABEL_SHOW_W else None,
+                (
+                    MDButtonText(text="Pause")
+                    if Window.width > self.LABEL_SHOW_W
+                    else None
+                ),
                 theme_height="Custom",
                 theme_width="Custom",
                 theme_font_size="Custom",
@@ -503,13 +511,17 @@ class MainApp(MDApp):
                     0,
                 ],
                 # size_hint=(0.135, 1),
-                pos_hint={"x": 0.115, "top": .95},
+                pos_hint={"x": 0.115, "top": 0.95},
                 on_press=self.on_pause_press,
             )
             if not self.read_paused
             else MDButton(
                 MDButtonIcon(icon="play"),
-                MDButtonText(text="Resume") if Window.width > self.LABEL_SHOW_W else None,
+                (
+                    MDButtonText(text="Resume")
+                    if Window.width > self.LABEL_SHOW_W
+                    else None
+                ),
                 theme_height="Custom",
                 theme_width="Custom",
                 theme_font_size="Custom",
@@ -517,13 +529,12 @@ class MainApp(MDApp):
                     0,
                 ],
                 # size_hint=(0.135, 1),
-                pos_hint={"x": 0.115, "top": .95},
+                pos_hint={"x": 0.115, "top": 0.95},
                 on_press=self.on_pause_press,
             )
         )
         self.blayout.add_widget(self.ibutton, index=-1)
         # self.screen.add_widget(self.layout)
-
 
     def text_valid(self, *_args):
         self.chap_num = self.chap.text.lstrip("Chapter ")
@@ -606,7 +617,7 @@ class MainApp(MDApp):
             self.word_index = j["INDEX"]
 
     def write_consts(self):
-        with open(self.chap_root / "consts.json", "w") as f:
+        with open(Path("consts.json"), "w") as f:
             j = json.dumps(
                 {
                     "DEFAULT_FONT_SIZE": self.DEFAULT_FONT_SIZE,
@@ -622,13 +633,10 @@ class MainApp(MDApp):
             f.write(j)
 
     def update_all_text(self):
-        self.mtext.text = self.all_text[
-            min(self.word_index, len(self.all_text) - 1)
-        ]
+        self.mtext.text = self.all_text[min(self.word_index, len(self.all_text) - 1)]
         self.btext.text = " ".join(
             self.all_text[
-                self.word_index
-                + 2 : min(self.word_index + self.BH, len(self.all_text))
+                self.word_index + 2 : min(self.word_index + self.BH, len(self.all_text))
             ]
         )
         self.side_text1.text = self.all_text[self.word_index - 1]
